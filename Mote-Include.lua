@@ -30,7 +30,6 @@ current_mote_include_version = 2
 function init_include()
     -- Used to define various types of data mappings.  These may be used in the initialization, so load it up front.
     include('Mote-Mappings')
-    
     -- Modes is the include for a mode-tracking variable class.  Used for state vars, below.
     include('Modes')
 
@@ -47,6 +46,7 @@ function init_include()
     state.CastingMode         = M{['description'] = 'Casting Mode'}
     state.IdleMode            = M{['description'] = 'Idle Mode'}
     state.RestingMode         = M{['description'] = 'Resting Mode'}
+    state.LevelCap            = M{['description'] = 'Level Cap'}
 
     state.DefenseMode         = M{['description'] = 'Defense Mode', 'None', 'Physical', 'Magical'}
     state.PhysicalDefenseMode = M{['description'] = 'Physical Defense Mode', 'PDT'}
@@ -133,7 +133,7 @@ function init_include()
     gear.ElementalRing = {name=""}
     gear.FastcastStaff = {name=""}
     gear.RecastStaff = {name=""}
-
+    gear.ElementalGrip = {name=""}
 
     -- Load externally-defined information (info that we don't want to change every time this file is updated).
 
@@ -150,6 +150,7 @@ function init_include()
     optional_include({'user-globals.lua'})
     optional_include({player.name..'-globals.lua'})
 
+    optional_include({player.name..'-Mappings.lua'})
     -- *-globals.lua may define additional sets to be added to the local ones.
     if define_global_sets then
         define_global_sets()
@@ -476,7 +477,7 @@ end
 
 -- Returns the appropriate idle set based on current state values and location.
 -- Set construction order (all of which are optional):
---   sets.idle[idleScope][state.IdleMode][Pet[Engaged]][CustomIdleGroups]
+--   sets.idle[idleScope][state.LevelCap][state.IdleMode][Pet[Engaged]][CustomIdleGroups]
 --
 -- Params:
 -- petStatus - Optional explicit definition of pet status.
@@ -503,6 +504,11 @@ function get_idle_set(petStatus)
     if idleSet[idleScope] then
         idleSet = idleSet[idleScope]
         mote_vars.set_breadcrumbs:append(idleScope)
+    end
+
+    if idleSet[state.LevelCap.current] then
+        idleSet = idleSet[state.LevelCap.current]
+        mote_vars.set_breadcrumbs:append(state.LevelCap.current)
     end
 
     if idleSet[state.IdleMode.current] then
@@ -555,6 +561,11 @@ function get_melee_set()
     
     mote_vars.set_breadcrumbs:append('sets')
     mote_vars.set_breadcrumbs:append('engaged')
+    
+    if meleeSet[state.LevelCap.current] then
+        meleeSet = meleeSet[state.LevelCap.current]
+        mote_vars.set_breadcrumbs:append(state.LevelCap.current)
+    end
 
     if state.CombatForm.has_value and meleeSet[state.CombatForm.value] then
         meleeSet = meleeSet[state.CombatForm.value]
@@ -610,6 +621,10 @@ function get_resting_set()
 
     mote_vars.set_breadcrumbs:append('sets')
     mote_vars.set_breadcrumbs:append('resting')
+    if restingSet[state.LevelCap.current] then
+        restingSet = restingSet[state.LevelCap.current]
+        mote_vars.set_breadcrumbs:append(state.LevelCap.current)
+    end
 
     if restingSet[state.RestingMode.current] then
         restingSet = restingSet[state.RestingMode.current]
@@ -692,8 +707,9 @@ function get_precast_set(spell, spellMap)
     end
 
     -- Update defintions for element-specific gear that may be used.
-    set_elemental_gear(spell)
     
+    set_elemental_gear(spell)
+    	
     -- Return whatever we've constructed.
     return equipSet
 end

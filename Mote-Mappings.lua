@@ -26,12 +26,21 @@ spirits = S{"LightSpirit", "DarkSpirit", "FireSpirit", "EarthSpirit", "WaterSpir
 elements.spirit_of = {['Light']="Light Spirit", ['Dark']="Dark Spirit", ['Fire']="Fire Spirit", ['Earth']="Earth Spirit",
         ['Water']="Water Spirit", ['Wind']="Air Spirit", ['Ice']="Ice Spirit", ['Lightning']="Thunder Spirit"}
 
+helixes = S{"Luminohelix", "Noctohelix", "Pyrohelix", "Geohelix", "Hydrohelix", "Anemohelix", "Cryohelix", "Ionohelix"}
+elements.helix_of = {['Light']="Luminohelix", ['Dark']="Noctohelix", ['Fire']="Pyrohelix", ['Earth']="Geohelix",
+                ['Water']="Hydrohelix", ['Wind']="Anemohelix", ['Ice']="Cryohelix", ['Lightning']="Ionohelix"}
+        
+        
 runes = S{'Lux', 'Tenebrae', 'Ignis', 'Gelus', 'Flabra', 'Tellus', 'Sulpor', 'Unda'}
+
 elements.rune_of = {['Light']='Lux', ['Dark']='Tenebrae', ['Fire']='Ignis', ['Ice']='Gelus', ['Wind']='Flabra',
      ['Earth']='Tellus', ['Lightning']='Sulpor', ['Water']='Unda'}
 
 elements.obi_of = {['Light']='Korin Obi', ['Dark']='Anrin Obi', ['Fire']='Karin Obi', ['Ice']='Hyorin Obi', ['Wind']='Furin Obi',
      ['Earth']='Dorin Obi', ['Lightning']='Rairin Obi', ['Water']='Suirin Obi'}
+
+elements.grip_of = {['Light']='Light Grip', ['Dark']='Dark Grip', ['Fire']='Fire Grip', ['Ice']='Ice Grip', ['Wind']='Wind Grip',
+     ['Earth']='Earth Grip', ['Lightning']='Thunder Grip', ['Water']='Water Grip'}
 
 elements.gorget_of = {['Light']='Light Gorget', ['Dark']='Shadow Gorget', ['Fire']='Flame Gorget', ['Ice']='Snow Gorget',
     ['Wind']='Breeze Gorget', ['Earth']='Soil Gorget', ['Lightning']='Thunder Gorget', ['Water']='Aqua Gorget'}
@@ -228,14 +237,16 @@ areas.Cities = S{
     "Bastok Mines",
     "Metalworks",
     "Aht Urhgan Whitegate",
-    "Tavanazian Safehold",
+    "Tavnazian Safehold",
     "Nashmau",
     "Selbina",
     "Mhaura",
     "Norg",
     "Eastern Adoulin",
     "Western Adoulin",
-    "Kazham"
+    "Kazham",
+    "Rabao",
+    "Chocobo Circuit",
 }
 -- Adoulin areas, where Ionis will grant special stat bonuses.
 areas.Adoulin = S{
@@ -271,5 +282,4 @@ npcs.Trust = S{'Ajido-Marujido','Aldo','Ayame','Cherukiki','Curilla','D.Shantott
         'NajaSalaheem','Najelith','Naji','NanaaMihgo','Nashmeira','Noillurie','Ovjang','Prishe','Rainemard',
         'RomaaMihgo','Sakura','Shantotto','StarSibyl','Tenzen','Trion','UkaTotlihn','Ulmia','Valaineral',
         'Volker','Zazarg','Zeid'}
-
 
