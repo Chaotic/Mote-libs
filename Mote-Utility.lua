@@ -418,6 +418,7 @@ function set_elemental_gear(spell)
     set_elemental_gorget_belt(spell)
     set_elemental_obi_cape_ring(spell)
     set_elemental_staff(spell)
+    set_elemental_grip(spell)
 end
 
 
@@ -438,7 +439,7 @@ function set_elemental_gorget_belt(spell)
 end
 
 
--- Function to get an appropriate obi/cape/ring for the current action.
+-- Function to get an appropriate obi/cape/ring/grip for the current action.
 function set_elemental_obi_cape_ring(spell)
     if spell.element == 'None' then
         return
@@ -453,10 +454,10 @@ function set_elemental_obi_cape_ring(spell)
     gear.ElementalObi.name = obi_name or gear.default.obi_waist  or ""
     
     if obi_name then
-        if player.inventory['Twilight Cape'] or player.wardrobe['Twilight Cape'] then
+        if finditem('Twilight Cape') then
             gear.ElementalCape.name = "Twilight Cape"
         end
-        if (player.inventory['Zodiac Ring'] or player.wardrobe['Zodiac Ring']) and spell.english ~= 'Impact' and
+        if finditem('Zodiac Ring') and spell.english ~= 'Impact' and
             not S{'Divine Magic','Dark Magic','Healing Magic'}:contains(spell.skill) then
             gear.ElementalRing.name = "Zodiac Ring"
         end
@@ -466,7 +467,11 @@ function set_elemental_obi_cape_ring(spell)
     end
 end
 
-
+-- check inventory and all wardrobes for an item
+function finditem(itemname)
+    return (player.inventory[itemname] or player.wardrobe[itemname] or player.wardrobe2[itemname]or player.wardrobe3[itemname]or player.wardrobe4[itemname]or player.wardrobe5[itemname]or player.wardrobe6[itemname]or player.wardrobe7[itemname]or player.wardrobe8[itemname])
+  end
+  
 -- Function to get the appropriate fast cast and/or recast staves for the current spell.
 function set_elemental_staff(spell)
     if spell.action_type ~= 'Magic' then
@@ -477,6 +482,14 @@ function set_elemental_staff(spell)
     gear.RecastStaff.name   = get_elemental_item_name("recast_staff", S{spell.element})   or gear.default.recast_staff    or ""
 end
 
+-- Function to get the appropriate grip for the current spell.
+function set_elemental_grip(spell)
+    if spell.action_type ~= 'Magic' then
+        return
+    end
+    
+    gear.ElementalGrip.name = get_elemental_item_name("grip", S{spell.element}) or gear.default.ElementalGrip  or ""
+end
 
 -- Gets the name of an elementally-aligned piece of gear within the player's
 -- inventory that matches the conditions set in the parameters.
@@ -499,7 +512,7 @@ function get_elemental_item_name(item_type, valid_elements, restricted_to_elemen
     local item_map = elements[item_type:lower()..'_of']
     
     for element in (potential_elements.it or it)(potential_elements) do
-        if valid_elements:contains(element) and (player.inventory[item_map[element]] or player.wardrobe[item_map[element]]) then
+        if valid_elements:contains(element) and finditem(item_map[element]) then
             return item_map[element]
         end
     end
