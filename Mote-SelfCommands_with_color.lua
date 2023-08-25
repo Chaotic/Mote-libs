@@ -6,6 +6,13 @@
 
 -- Routing function for general known self_commands.  Mappings are at the bottom of the file.
 -- Handles splitting the provided command line up into discrete words, for the other functions to use.
+
+	Notification_color = 200
+	text_color = 160
+	warning_text = 167
+	
+	print('Running new Mote-SelfCommands_with_color')
+	
 function self_command(commandArgs)
     local commandArgs = commandArgs
     if type(commandArgs) == 'string' then
@@ -60,8 +67,7 @@ function handle_set(cmdParams)
         if job_state_change then
             job_state_change(descrip, newVal, oldVal)
         end
-
-        local msg = descrip..' is now '..state_var.current
+        local msg = ('[' .. descrip ):color(Notification_color) .. (' is now '):color(text_color) .. (state_var.current):color(warning_text) .. (']'):color(Notification_color)
         if state_var == state.DefenseMode and newVal ~= 'None' then
             msg = msg .. ' (' .. state[newVal .. 'DefenseMode'].current .. ')'
         end
@@ -158,8 +164,8 @@ function handle_cycle(cmdParams)
         if job_state_change then
             job_state_change(descrip, newVal, oldVal)
         end
-
-        add_to_chat(122,descrip..' is now '..state_var.current..'.')
+		local msg = ('[' .. descrip ):color(Notification_color) .. (' is now '):color(text_color) .. (state_var.current):color(warning_text) .. (']'):color(Notification_color)
+        add_to_chat(122,msg)
         handle_update({'auto'})
     else
         add_to_chat(123,'Mote-Libs: Cycle: Unknown field ['..cmdParams[1]..']')
@@ -195,7 +201,8 @@ function handle_toggle(cmdParams)
             job_state_change(descrip, newVal, oldVal)
         end
 
-        add_to_chat(122,descrip..' is now '..state_var.current..'.')
+        local msg = ('[' .. descrip ):color(Notification_color) .. (' is now '):color(text_color) .. (state_var.current):color(warning_text) .. (']'):color(Notification_color)
+        add_to_chat(122,msg)
         handle_update({'auto'})
     else
         add_to_chat(123,'Mote-Libs: Toggle: Unknown field ['..cmdParams[1]..']')
@@ -223,7 +230,8 @@ function handle_unset(cmdParams)
             job_state_change(descrip, newVal, oldVal)
         end
 
-        add_to_chat(122,descrip..' is now '..state_var.current..'.')
+        local msg = ('[' .. descrip ):color(Notification_color) .. (' is now '):color(text_color) .. (state_var.current):color(warning_text) .. (']'):color(Notification_color)
+        add_to_chat(122,msg)
         handle_update({'auto'})
     else
         add_to_chat(123,'Mote-Libs: Toggle: Unknown field ['..cmdParams[1]..']')
@@ -260,23 +268,22 @@ end
 
 -- showtp: equip the current TP set for examination.
 function handle_showtp(cmdParams)
-    local msg = 'Showing current TP set: ['.. state.OffenseMode.value
+    local msg = ('[Showing current TP set]'):color(Notification_color) .. (' -> ['.. state.OffenseMode.value):color(text_color)
     if state.HybridMode.value ~= 'Normal' then
-        msg = msg .. '/' .. state.HybridMode.value
+        msg = msg .. ('/' .. state.HybridMode.value):color(text_color)
     end
-    msg = msg .. ']'
+    msg = msg .. (']'):color(text_color)
 
     if #classes.CustomMeleeGroups > 0 then
-        msg = msg .. ' ['
+        msg = msg .. (' ['):color(text_color)
         for i = 1,#classes.CustomMeleeGroups do
-            msg = msg .. classes.CustomMeleeGroups[i]
+            msg = msg .. (classes.CustomMeleeGroups[i]):color(text_color)
             if i < #classes.CustomMeleeGroups then
-                msg = msg .. ', '
+                msg = msg .. (', '):color(text_color)
             end
         end
-        msg = msg .. ']'
+        msg = msg .. (']'):color(text_color)
     end
-
     add_to_chat(122, msg)
     equip(get_melee_set())
 end
@@ -330,35 +337,35 @@ function display_current_state()
     end
 
     if not eventArgs.handled then
-        local msg = 'Melee'
+        local msg = ('[Melee'):color(Notification_color)
         
         if state.CombatForm.has_value then
-            msg = msg .. ' (' .. state.CombatForm.value .. ')'
-        end
+        msg = msg .. (' (' .. state.CombatForm.value .. ')'):color(text_color)
+		end
+		
+		msg = msg .. (': '):color(Notification_color)
         
-        msg = msg .. ': '
-        
-        msg = msg .. state.OffenseMode.value
+         msg = msg .. (state.OffenseMode.value):color(text_color)
         if state.HybridMode.value ~= 'Normal' then
-            msg = msg .. '/' .. state.HybridMode.value
-        end
-        msg = msg .. ', WS: ' .. state.WeaponskillMode.value
+			msg = msg .. (' + '):color(text_color) .. (state.HybridMode.value):color(warning_text)
+		end
+        msg = msg .. ('] [WS: '):color(Notification_color) .. (state.WeaponskillMode.value):color(text_color) .. ('] '):color(Notification_color)
         
         if state.DefenseMode.value ~= 'None' then
-            msg = msg .. ', Defense: ' .. state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'
-        end
+			msg = msg  .. ('['):color(warning_text) .. ('Defense: '):color(warning_text) .. (state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'):color(text_color)..('] '):color(warning_text)
+		end
         
         if state.Kiting.value == true then
-            msg = msg .. ', Kiting'
-        end
+			msg = msg .. ('[Kiting'):color(Notification_color) .. ('] '):color(Notification_color)
+		end
 
-        if state.PCTargetMode.value ~= 'default' then
-            msg = msg .. ', Target PC: '..state.PCTargetMode.value
-        end
+		if state.PCTargetMode.value ~= 'default' then
+			msg = msg .. ('[Target PC: '):color(Notification_color)..state.PCTargetMode.value .. ('] '):color(Notification_color)
+		end
 
-        if state.SelectNPCTargets.value == true then
-            msg = msg .. ', Target NPCs'
-        end
+		if state.SelectNPCTargets.value == true then
+			msg = msg .. ('[Target NPCs'):color(Notification_color).. ('] '):color(Notification_color) .. ('] '):color(Notification_color)
+		end
 
         add_to_chat(122, msg)
     end
@@ -373,31 +380,31 @@ function display_current_caster_state()
     local msg = ''
     
     if state.OffenseMode.value ~= 'None' then
-        msg = msg .. 'Melee'
+        msg = msg .. ('[Melee'):color(Notification_color)
 
         if state.CombatForm.has_value then
-            msg = msg .. ' (' .. state.CombatForm.value .. ')'
-        end
-        
-        msg = msg .. ', '
+			msg = msg .. (' (' .. state.CombatForm.value .. ')'):color(text_color)
+		end
+		
+		msg = msg .. ('] '):color(Notification_color)
     end
     
-    msg = msg .. 'Casting ['..state.CastingMode.value..'], Idle ['..state.IdleMode.value..']'
+    msg = msg .. ('[Casting: '):color(Notification_color) ..(state.CastingMode.value):color(text_color).. ('] [Idle: '):color(Notification_color) ..(state.IdleMode.value):color(text_color).. (']'):color(Notification_color)
     
     if state.DefenseMode.value ~= 'None' then
-        msg = msg .. ', ' .. 'Defense: ' .. state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'
+        msg = msg  .. ('['):color(warning_text) .. ('Defense: '):color(warning_text) .. (state.DefenseMode.value .. ' (' .. state[state.DefenseMode.value .. 'DefenseMode'].value .. ')'):color(text_color)..('] '):color(warning_text)
     end
     
     if state.Kiting.value == true then
-        msg = msg .. ', Kiting'
+        msg = msg .. ('[Kiting'):color(Notification_color) .. ('] '):color(Notification_color)
     end
 
     if state.PCTargetMode.value ~= 'default' then
-        msg = msg .. ', Target PC: '..state.PCTargetMode.value
+        msg = msg .. ('[Target PC: '):color(Notification_color)..state.PCTargetMode.value .. ('] '):color(Notification_color)
     end
 
     if state.SelectNPCTargets.value == true then
-        msg = msg .. ', Target NPCs'
+        msg = msg .. ('[Target NPCs'):color(Notification_color).. ('] '):color(Notification_color) .. ('] '):color(Notification_color)
     end
 
     add_to_chat(122, msg)
@@ -463,3 +470,4 @@ selfCommandMaps = {
     ['naked']    = handle_naked,
     ['help']     = handle_help,
     ['test']     = handle_test}
+

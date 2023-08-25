@@ -29,7 +29,7 @@ current_mote_include_version = 2
 
 function init_include()
     -- Used to define various types of data mappings.  These may be used in the initialization, so load it up front.
-    include('Mote-Mappings')
+    include('Chaotic-Mote-Mappings')
     -- Modes is the include for a mode-tracking variable class.  Used for state vars, below.
     include('Modes')
 
@@ -139,15 +139,15 @@ function init_include()
     -- Load externally-defined information (info that we don't want to change every time this file is updated).
 
     -- Used to define misc utility functions that may be useful for this include or any job files.
-    include('Mote-Utility')
+    include('Chaotic-Mote-Utility')
 
     -- Used for all self-command handling.
-    include('Mote-SelfCommands')
+    include('Chaotic-Mote-SelfCommands_with_color')
 
     -- Include general user globals, such as custom binds or gear tables.
     -- Load Mote-Globals first, followed by User-Globals, followed by <character>-Globals.
     -- Any functions re-defined in the later includes will overwrite the earlier versions.
-    include('Mote-Globals')
+    include('Chaotic-Mote-Globals')
     optional_include({'user-globals.lua'})
     optional_include({player.name..'-globals.lua'})
 
@@ -182,7 +182,7 @@ if not mote_include_version or mote_include_version < current_mote_include_versi
     add_to_chat(123,'For details, visit https://github.com/Kinematics/GearSwap-Jobs/wiki/Upgrading')
     rev = mote_include_version or 1
     include_path('rev' .. tostring(rev))
-    include('Mote-Include')
+    include('Chaotic-Mote-Include')
     return
 end
 
