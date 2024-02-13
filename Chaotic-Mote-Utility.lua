@@ -154,6 +154,7 @@ function refine_waltz(spell, action, spellMap, eventArgs)
     local newWaltz = spell.english
     local waltzID
     
+   --custom_debug("refine_waltz start",newWaltz)
     local missingHP
     
     -- If curing ourself, get our exact missing HP
@@ -165,11 +166,15 @@ function refine_waltz(spell, action, spellMap, eventArgs)
         local est_max_hp = target.hp / (target.hpp/100)
         missingHP = math.floor(est_max_hp - target.hp)
     end
-    
     -- If we have an estimated missing HP value, we can adjust the preferred tier used.
     if missingHP ~= nil then
         if player.main_job == 'DNC' then
             dnc_level = player.main_job_level
+      --[[ 
+            custom_debug("refine_waltz player.main_job",player.main_job)
+            custom_debug("refine_waltz newWaltz",dnc_level)
+            custom_debug("refine_waltz missingHP",missingHP)
+ --]]
             if missingHP < 40 and spell.target.name == player.name then
                 -- Not worth curing yourself for so little.
                 -- Don't block when curing others to allow for waking them up.
@@ -182,7 +187,7 @@ function refine_waltz(spell, action, spellMap, eventArgs)
             elseif missingHP >= 1100 and dnc_level >= 70 then
                 newWaltz = 'Curing Waltz IV'
                 waltzID = 193
-            elseif missingHP >= 600 and dnc_level >= 45  then
+            elseif missingHP >= 500 and dnc_level >= 45  then
                 newWaltz = 'Curing Waltz III'
                 waltzID = 192
             elseif missingHP >= 200 and dnc_level >= 30 then
@@ -215,6 +220,7 @@ function refine_waltz(spell, action, spellMap, eventArgs)
             return
         end
     end
+    --custom_debug("refine_waltz newWaltz2",newWaltz)
 
     local tpCost = waltz_tp_cost[newWaltz]
 
